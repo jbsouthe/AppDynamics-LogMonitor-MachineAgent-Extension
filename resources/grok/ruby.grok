@@ -1,0 +1,6 @@
+#
+# From: https://github.com/logstash-plugins/logstash-patterns-core/blob/master/patterns/ruby
+#
+
+RUBY_LOGLEVEL (?:DEBUG|FATAL|ERROR|WARN|INFO)
+RUBY_LOGGER [DFEWI], \[%{TIMESTAMP_ISO8601:log_timestamp} #%{POSINT:pid}\] *%{RUBY_LOGLEVEL:loglevel} -- +%{DATA:progname}: %{GREEDYDATA:logMessage}

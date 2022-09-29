@@ -1,0 +1,7 @@
+#
+# From: https://github.com/logstash-plugins/logstash-patterns-core/blob/master/patterns/redis
+#
+
+REDISTIMESTAMP %{MONTHDAY} %{MONTH} %{TIME}
+REDISLOG \[%{POSINT:pid}\] %{REDISTIMESTAMP:log_timestamp} \*
+

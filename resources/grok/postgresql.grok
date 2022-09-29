@@ -1,0 +1,7 @@
+#
+# From: https://github.com/logstash-plugins/logstash-patterns-core/blob/master/patterns/postgresql
+#
+
+# Default postgresql pg_log format pattern
+POSTGRESQL %{DATESTAMP:log_timestamp} %{TZ} %{DATA:user_id} %{GREEDYDATA:connection_id} %{POSINT:pid}
+

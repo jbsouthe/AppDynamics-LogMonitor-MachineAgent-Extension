@@ -1,0 +1,8 @@
+#
+# From: https://github.com/logstash-plugins/logstash-patterns-core/blob/master/patterns/mcollective-patterns
+#
+
+# Remember, these can be multi-line events.
+MCOLLECTIVE ., \[%{TIMESTAMP_ISO8601:log_timestamp} #%{POSINT:pid}\]%{SPACE}%{LOGLEVEL:event_level}
+
+MCOLLECTIVEAUDIT %{TIMESTAMP_ISO8601:log_timestamp}:

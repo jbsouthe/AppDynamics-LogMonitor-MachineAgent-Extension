@@ -1,5 +1,6 @@
 package com.cisco.josouthe.jobs;
 
+import com.cisco.josouthe.config.Configuration;
 import io.krakens.grok.api.Grok;
 import io.krakens.grok.api.GrokCompiler;
 import io.krakens.grok.api.Match;
@@ -7,6 +8,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Map;
@@ -23,14 +27,24 @@ public class JobFile {
     private File jobFileHandle;
     private JobModel model;
     private GrokCompiler grok;
+    private Configuration configuration;
 
-    public JobFile(File jobFile, JobModel jobModel) {
+    public JobFile(File jobFile, JobModel jobModel, Configuration configuration) {
+        this.configuration=configuration;
         this.model=jobModel;
         this.jobFileHandle=jobFile;
         this.grok = GrokCompiler.newInstance();
         grok.registerDefaultPatterns();
         if( model.getEventTimestamp() != null ) {
             grok.register( "eventTimestamp",model.getEventTimestamp().getPattern());
+        }
+        for( File grokFile : configuration.getGrokFiles() ) {
+            try {
+                grok.register(new FileReader(grokFile));
+                //logger.debug("loaded grok file: "+ grokFile.getName());
+            } catch (Exception exception) {
+                logger.warn(String.format("error loading grok file %s Exception: %s",grokFile.getName(), exception));
+            }
         }
     }
 
@@ -55,11 +69,11 @@ public class JobFile {
                 logger.debug("Testing with grok: '%s' for job file %s", grokPattern, this.jobFileHandle.getName());
                 long possibleMatchesPerLine = countTotalPossibleMatches(grokPattern);
                 Grok compiledPattern = grok.compile(grokPattern);
-                logger.debug("compiled patern: %s", compiledPattern.getNamedRegex());
+                logger.debug("compiled pattern: %s", compiledPattern.getNamedRegex());
                 for (String line : lines.split("\\n")) {
                     totalPossibleMatches += possibleMatchesPerLine;
                     Match gm = compiledPattern.match(line);
-                    Map<String, Object> groups = gm.captureFlattened();
+                    Map<String, Object> groups = gm.capture();
                     totalActualMatches += countTotalActualMatches(groups);
                     logger.debug("input line '%s' grok pattern '%s' result: '%s'", line, grokPattern, groups);
                 }

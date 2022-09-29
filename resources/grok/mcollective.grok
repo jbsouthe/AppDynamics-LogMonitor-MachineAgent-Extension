@@ -1,0 +1,5 @@
+#
+# From: https://github.com/logstash-plugins/logstash-patterns-core/blob/master/patterns/mcollective
+#
+
+MCOLLECTIVEAUDIT %{TIMESTAMP_ISO8601:log_timestamp}:

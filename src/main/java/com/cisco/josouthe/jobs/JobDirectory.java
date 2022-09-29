@@ -1,5 +1,6 @@
 package com.cisco.josouthe.jobs;
 
+import com.cisco.josouthe.config.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
@@ -23,8 +24,10 @@ public class JobDirectory {
     private Map<String,JobFile> fileMap;
     private FilenameFilter jobFileNameFilter;
     private long lastScanTime;
+    private Configuration configuration;
 
-    public JobDirectory( String dirName ) throws JobFileException {
+    public JobDirectory( String dirName, Configuration configuration) throws JobFileException {
+        this.configuration=configuration;
         directoryFile = new File(dirName);
         if( !directoryFile.exists() || !directoryFile.isDirectory() ) throw new JobFileException("Directory does not exist: "+ dirName);
         this.jobFileNameFilter = new FilenameFilter() {
@@ -49,7 +52,7 @@ public class JobDirectory {
             ) {
                 try {
                     JobModel jobModel = yaml.load(new FileInputStream(file));
-                    fileMap.put(file.getName(), new JobFile(file, jobModel));
+                    fileMap.put(file.getName(), new JobFile(file, jobModel, this.configuration));
                 } catch (FileNotFoundException fileNotFoundException) {
                     logger.warn(String.format("File was just here?! %s exception %s",file.getAbsolutePath(), fileNotFoundException));
                 }

@@ -21,8 +21,9 @@ public class JobDirectoryTest extends TestCase {
 
     @Test
     public void testJobDirectoryInit() throws JobFileException {
-        JobDirectory jobDirectory = new JobDirectory("./test-jobdir");
+        JobDirectory jobDirectory = new JobDirectory("./test-jobdir", new Configuration(null, null));
 
-        jobDirectory.findBestMatch(new File("./test-jobdir/sample-apache-access-log.log"));
+        JobFile jobFile = jobDirectory.findBestMatch(new File("./test-jobdir/sample-apache-access-log.log"));
+        assert jobFile.getJobFileHandle().getName().equals("sample-apache-httpserver-access-log.job");
     }
 }
