@@ -1,0 +1,87 @@
+# The version of this job configuration file. This should not be changed by the user.
+version: 2
+
+# Optional property. Defaults to "false"
+#
+enabled: false
+
+# Mandatory property.
+#
+# Source can be of two types:
+#   1) file: This allows tailing a log file. It consists of three parameters:
+#       - path: Path to the directory where files need to be tailed.
+#       - nameGlob: The name/expression to tail the matching files.
+#       - startAtEnd: If set to true allows tailing the file from the end.
+#         Example:
+#         1) path: /var/log
+#            nameGlob: */*.log searches for .log files one level deep in the /var/log
+#            directory (matches '/var/log/cassandra/system.log' but not
+#            '/var/log/apache2/logs/error.log').
+#         2) path: /var/log
+#            nameGlob: **/*.log searches for .log files even in the sub-directories in
+#            /var/log directory (matches both '/var/log/apache2/logs/error.log' and
+#            '/var/log/cassandra/system.log').
+#       On Windows, path should be provided as if on Unix environments.
+#       Ex: demo/logs
+#       Ex: C:/app/logs
+#   2) syslog: Listens to Syslog messages on a network port. It consists of two parameters:
+#       - protocol: The transport layer protocol that will be used. Currently
+#         we support only tcp.
+#       - port: The port at which the server will be listening to receive the
+#         syslog messages. Currently, we support one port per job file, and any
+#         enabled job file should be configured to receive messages at different
+#         ports. The user must make sure it does not conflict with anything else
+#         active in network. If no port number is provided, default port 514
+#         will be used.
+#
+source:
+    type: file
+    path: /var/log
+    nameGlob: system.log
+    startAtEnd: false
+
+# Optional property.
+#
+# If provided, then it means the file being tailed has records that span
+# multiple lines.
+#
+# If not provided then it means that each line read from the file is to
+# be treated as a separate record.
+#
+# To identify the beginning of a record, there are 2 options:
+#   1) "startsWith" followed by the first few characters of a line that
+#      indicate the beginning of a record.
+#   2) "regex" followed by the regular expression that indicates the
+#      beginning of a record.
+#
+multiline:
+   regex: "[A-z][a-z]{2}\\s+\\d.*"
+
+# Optional property (Except "sourceType").
+#
+# These fields are in addition to the data that is already present in the
+# files being tailed. Each record read from the file will be enriched with
+# these fields.
+#
+fields:
+   sourceType: mac-os-system-log
+
+# Optional property.
+#
+# The KeyValue Stage is a way to support parsing of logs to identify and capture
+# key-value pairs with a user defined delimiter.
+# The KeyValue Stage is defined after the Grok Stage (if defined), and can leverage
+# parsing done in the GrokStage to identify the key-value pairs in the logs.
+# For details refer to 'sample-glassfish-log.job' file.
+
+# Optional property.
+#
+# RequestGuid attempts to extract the request GUID from the specified "source" field.
+# For details refer to 'sample-analytics-log-with-request-guid.job' file.
+
+# Optional property.
+#
+# The transform stage is applied after all fields have been captured from the log message.
+# The user can specify a list of field names, for which they want to cast
+# the value to a specific type or rename the field with an "alias".
+# For details refer to 'sample-glassfish-log.job' file.
