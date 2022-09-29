@@ -34,6 +34,11 @@
             <artifactId>snakeyaml</artifactId>
             <version>1.32</version>
         </dependency>
+        <dependency>
+            <groupId>io.krakens</groupId>
+            <artifactId>java-grok</artifactId>
+            <version>0.1.9</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.hyperic/sigar -->
         <dependency>
             <groupId>org.hyperic</groupId>

@@ -9,9 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -65,12 +63,13 @@ public class JobDirectory {
         double bestTestResult = 0.0d;
         for( JobFile jobFile : this.fileMap.values() ) {
             double testResult = jobFile.testGrok(sampleLines);
+            logger.debug(String.format("Test %s result %f",jobFile.getJobFileHandle().getName(), testResult));
             if( testResult > bestTestResult ) {
                 bestTestResult=testResult;
                 bestMatchSoFar=jobFile;
             }
         }
-
+        logger.info(String.format("Best Match for %s is %s", logFile.getAbsolutePath(), bestMatchSoFar.getJobFileHandle().getName()));
         return bestMatchSoFar;
     }
 

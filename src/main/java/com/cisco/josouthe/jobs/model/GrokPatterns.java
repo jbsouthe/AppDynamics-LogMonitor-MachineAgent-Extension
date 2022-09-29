@@ -2,9 +2,9 @@ package com.cisco.josouthe.jobs.model;
 
 import java.util.List;
 
-public class Grok {
+public class GrokPatterns {
     private List<String> patterns;
-    public Grok() {}
+    public GrokPatterns() {}
     public List<String> getPatterns() {
         return patterns;
     }

@@ -1,10 +1,15 @@
 package com.cisco.josouthe.jobs;
 
+import io.krakens.grok.api.Grok;
+import io.krakens.grok.api.GrokCompiler;
+import io.krakens.grok.api.Match;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-
+import java.io.StringReader;
+import java.util.Arrays;
+import java.util.Map;
 
 /*
 JobFile represents a physical file in the ./monitors/analytics-agent/conf/job/ directory, some may be in use, others simply templates
@@ -17,10 +22,16 @@ public class JobFile {
     private static final Logger logger = LogManager.getFormatterLogger();
     private File jobFileHandle;
     private JobModel model;
+    private GrokCompiler grok;
 
     public JobFile(File jobFile, JobModel jobModel) {
         this.model=jobModel;
         this.jobFileHandle=jobFile;
+        this.grok = GrokCompiler.newInstance();
+        grok.registerDefaultPatterns();
+        if( model.getEventTimestamp() != null ) {
+            grok.register( "eventTimestamp",model.getEventTimestamp().getPattern());
+        }
     }
 
     public void setJobFileHandle( File file ) { this.jobFileHandle=file; }
@@ -33,12 +44,43 @@ public class JobFile {
     //returns a double from 0.0 to 100.0 giving an indication of matching compatibility
     public double testGrok( String lines ) {
         if( lines == null ) return 0.0d;
-        double score = 0.0d;
+        long totalPossibleMatches = 0l;
+        long totalActualMatches = 0l;
         logger.warn("%s testGrok() grok: '%s'", this.jobFileHandle.getName(),(model.getGrok()!= null ? model.getGrok().getPatterns().toString() : "null"));
-        //TODO the magic here
-
-        return score;
+        if ( model.getGrok() == null ) { //this happens sometimes, look at sample-osx-system-log.job
+            return Double.MIN_VALUE; //try not to match on this
+        }
+        for( String grokPattern : model.getGrok().getPatterns() ) {
+            try {
+                logger.debug("Testing with grok: '%s' for job file %s", grokPattern, this.jobFileHandle.getName());
+                long possibleMatchesPerLine = countTotalPossibleMatches(grokPattern);
+                Grok compiledPattern = grok.compile(grokPattern);
+                logger.debug("compiled patern: %s", compiledPattern.getNamedRegex());
+                for (String line : lines.split("\\n")) {
+                    totalPossibleMatches += possibleMatchesPerLine;
+                    Match gm = compiledPattern.match(line);
+                    Map<String, Object> groups = gm.captureFlattened();
+                    totalActualMatches += countTotalActualMatches(groups);
+                    logger.debug("input line '%s' grok pattern '%s' result: '%s'", line, grokPattern, groups);
+                }
+            } catch(IllegalArgumentException illegalArgumentException) {
+                logger.debug("Bad Parser Job File %s Exception: %s",this.jobFileHandle.getName(), illegalArgumentException);
+                return Double.MIN_VALUE;
+            }
+        }
+        if( totalPossibleMatches == 0 ) totalPossibleMatches+=0.000000001;
+        return totalActualMatches/totalPossibleMatches;
     }
 
+    private long countTotalActualMatches(Map<String, Object> groups) {
+        long total = 0;
+        for( Object object : groups.values()) {
+            if( object != null && !"".equals(String.valueOf(object))) total++;
+        }
+        return total;
+    }
 
+    private long countTotalPossibleMatches( String grokPattern ) {
+        return Arrays.stream(grokPattern.split("\\%\\{")).count();
+    }
 }

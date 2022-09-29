@@ -1,5 +1,7 @@
 package com.cisco.josouthe;
 
+import java.util.Map;
+
 public class Utility {
     public static String toString(Object[] a) {
         if (a == null)
@@ -17,6 +19,15 @@ public class Utility {
                 return b.append(']').toString();
             b.append(", ");
         }
+    }
+
+    public static String toString( Map<Object,Object> map ) {
+        if( map == null || map.size() == 0 ) return "empty";
+        StringBuilder output = new StringBuilder();
+        for( Map.Entry<Object,Object> entry : map.entrySet() ) {
+            output.append(entry.getKey() +"="+ entry.getValue()).append("\n");
+        }
+        return output.toString();
     }
 
     public static String removeFirstElements( int index, String[] array) {

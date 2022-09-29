@@ -1,6 +1,5 @@
 package com.cisco.josouthe.jobs;
 
-import java.util.List;
 import java.util.Map;
 import com.cisco.josouthe.jobs.model.*;
 
@@ -10,7 +9,7 @@ public class JobModel {
     private Map<String,Object> source;
     private Multiline multiline;
     private Map<String,String> fields;
-    private Grok grok;
+    private GrokPatterns grokPatterns;
     private EventTimestamp eventTimestamp;
     private RequestGuid requestGuid;
 
@@ -76,12 +75,12 @@ public class JobModel {
         this.fields = fields;
     }
 
-    public Grok getGrok() {
-        return grok;
+    public GrokPatterns getGrok() {
+        return grokPatterns;
     }
 
-    public void setGrok(Grok grok) {
-        this.grok = grok;
+    public void setGrok(GrokPatterns grokPatterns) {
+        this.grokPatterns = grokPatterns;
     }
 
     public EventTimestamp getEventTimestamp() {
