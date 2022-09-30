@@ -110,9 +110,9 @@ public class JobFile {
         String basename = this.jobFileHandle.getName().substring(0,this.jobFileHandle.getName().lastIndexOf(".") );
         File file = File.createTempFile(String.format("auto-%s-",basename), ".job", targetDir);
         logger.debug("Job File designated: "+ file.getAbsolutePath());
-        file.deleteOnExit();
+        if( !logger.isDebugEnabled() ) file.deleteOnExit();
         JobFile jobFile = new JobFile(this, file );
-        jobFile.setSourceInfo(path, nameGlob);
+        jobFile.setSourceInfo(true, path, nameGlob);
         PrintWriter printWriter = new PrintWriter(file);
         Yaml yaml = new Yaml();
         yaml.dump(this.model, printWriter);
@@ -121,7 +121,8 @@ public class JobFile {
 
     public void delete() { this.jobFileHandle.delete(); }
 
-    private void setSourceInfo(String path, String nameGlob) {
+    private void setSourceInfo(boolean enabled, String path, String nameGlob) {
+        this.model.setEnabled(enabled);
         this.model.getSource().put("path",path);
         this.model.getSource().put("nameGlob",nameGlob);
     }
