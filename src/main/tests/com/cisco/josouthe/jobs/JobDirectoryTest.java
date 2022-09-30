@@ -23,9 +23,10 @@ public class JobDirectoryTest extends TestCase {
     public void testJobDirectoryInit() throws Exception, JobFileException {
         jobDirectory = new JobDirectory(testGrokDirName, new Configuration(null, null));
 
-        jobFile = jobDirectory.findBestMatch(new File(testGrokDirName+"/sample-apache-httpserver-access.log"));
+        File logSample = new File(testGrokDirName+"/sample-apache-httpserver-access.log");
+        jobFile = jobDirectory.findBestMatch(logSample);
         assert jobFile.getJobFileHandle().getName().equals("sample-apache-httpserver-access-log.job");
 
-        JobFile copyJobFile = jobFile.copy(new File("./target"), "someDir", "nameGlobThing");
+        JobFile copyJobFile = jobFile.copy(new File("./target"), logSample);
     }
 }

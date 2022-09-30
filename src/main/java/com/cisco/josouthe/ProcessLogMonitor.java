@@ -68,7 +68,7 @@ public class ProcessLogMonitor extends AManagedMonitor {
         if(openFilesMap.containsKey(logFile.getName())) return "";
         try {
             JobFile templateJobFile = templateJobManager.findBestMatch(logFile);
-            openFilesMap.put(logFile.getName(), templateJobFile.copy(configuration.getAnalyticsJobDir() , logFile.getParent(), logFile.getName()));
+            openFilesMap.put(logFile.getName(), templateJobFile.copy(configuration.getAnalyticsJobDir() , logFile));
         } catch (Exception e) {
             logger.warn(String.format("Job File Generation Exception for file %s, Exception: %s", logFile.getAbsolutePath(), e),e);
             taskOutputStringBuilder.append(String.format("Job File Generation Exception for file %s, Exception: %s\n", logFile.getAbsolutePath(), e));

@@ -9,6 +9,10 @@ import io.krakens.grok.api.Match;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.introspector.Property;
+import org.yaml.snakeyaml.nodes.NodeTuple;
+import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.File;
 import java.io.FileReader;
@@ -106,15 +110,29 @@ public class JobFile {
         return Arrays.stream(grokPattern.split("\\%\\{")).count();
     }
 
-    public JobFile copy( File targetDir, String path, String nameGlob ) throws IOException, CloneNotSupportedException {
-        String basename = this.jobFileHandle.getName().substring(0,this.jobFileHandle.getName().lastIndexOf(".") );
+    public JobFile copy( File targetDir, File logFile ) throws IOException, CloneNotSupportedException {
+        String path = logFile.getParent();
+        String nameGlob = logFile.getName();
+        String basename = nameGlob.replaceAll("\\.", "-");
         File file = File.createTempFile(String.format("auto-%s-",basename), ".job", targetDir);
         logger.debug("Job File designated: "+ file.getAbsolutePath());
         if( !logger.isDebugEnabled() ) file.deleteOnExit();
         JobFile jobFile = new JobFile(this, file );
         jobFile.setSourceInfo(true, path, nameGlob);
         PrintWriter printWriter = new PrintWriter(file);
-        Yaml yaml = new Yaml();
+        Representer representer = new Representer() {
+            @Override
+            protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object propertyValue, Tag customTag) {
+                // if value of property is null, ignore it.
+                if (propertyValue == null) {
+                    return null;
+                }
+                else {
+                    return super.representJavaBeanProperty(javaBean, property, propertyValue, customTag);
+                }
+            }
+        };
+        Yaml yaml = new Yaml( representer );
         yaml.dump(this.model, printWriter);
         return jobFile;
     }
