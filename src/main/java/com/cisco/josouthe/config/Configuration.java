@@ -88,8 +88,8 @@ public class Configuration {
         Yaml yaml = new Yaml(new Constructor(ConfigurationModel.class));
         try {
             ConfigurationModel configurationModel = yaml.load(new FileReader(this.configFile));
-            this.grokDir = new File(configurationModel.getGrokDirectory());
-            this.jobDir = new File(configurationModel.getJobDirectory());
+            this.grokDir = new File(this.runDir, configurationModel.getGrokDirectory());
+            this.jobDir = new File(this.runDir, configurationModel.getJobDirectory());
             String analDir = configurationModel.getAnalyticsDirectory();
             if( analDir == null || "".equals(analDir) ) {
                 this.analyticsJobDir = new File( this.runDir, "../analytics-agent/conf/job");
