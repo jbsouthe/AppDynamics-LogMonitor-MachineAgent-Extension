@@ -1,6 +1,6 @@
 package com.cisco.josouthe.model;
 
-public class Source {
+public class Source implements Cloneable {
     private String type, path, nameGlob;
     private boolean startAtEnd;
 
@@ -37,4 +37,6 @@ public class Source {
     public void setStartAtEnd(boolean startAtEnd) {
         this.startAtEnd = startAtEnd;
     }
+
+    protected Object clone() throws CloneNotSupportedException { return super.clone(); }
 }

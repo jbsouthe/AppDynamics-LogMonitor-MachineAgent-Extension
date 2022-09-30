@@ -1,6 +1,7 @@
 package com.cisco.josouthe.process;
 
 import com.cisco.josouthe.Utility;
+import com.cisco.josouthe.jobs.JobFile;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,6 +11,7 @@ public class OpenFile {
     public String fileName,type;
     private long pid=0;
     private File file;
+    private JobFile jobFile;
 
     public OpenFile(String fileName) {
         this.fileName=fileName;
@@ -31,6 +33,8 @@ public class OpenFile {
     public boolean isAccessible() { return file.exists(); }
     public long getPid() { return pid; }
     public File getFile() { return file; }
+    public JobFile getJobFile() { return jobFile; }
+    public void setJobFile(JobFile jobFile) { this.jobFile = jobFile; }
 
     public String toString() {
         return String.format("File: '%s' PID: %d Type: %s isReadable: %s isAccessible: %s", fileName, pid, type, isReadable(), isAccessible() );

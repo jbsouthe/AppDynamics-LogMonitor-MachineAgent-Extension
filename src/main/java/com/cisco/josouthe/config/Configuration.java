@@ -1,5 +1,7 @@
 package com.cisco.josouthe.config;
 
+import com.cisco.josouthe.jobs.JobDirectory;
+import com.cisco.josouthe.jobs.JobFileException;
 import com.cisco.josouthe.model.ConfigurationModel;
 import com.cisco.josouthe.model.JobModel;
 import com.cisco.josouthe.process.ProcessInfo;
@@ -35,6 +37,7 @@ public class Configuration {
     private String lsofCommandLine = "lsof -p %d";
     private List<String> logfileList;
     private List<String> processList;
+    private JobDirectory templateJobManager;
 
     public Configuration(String configFile, TaskExecutionContext context) throws TaskExecutionException {
         if( context == null ) {
@@ -52,7 +55,11 @@ public class Configuration {
         }
         this.grokDir = new File("./resources/grok");
         this.jobDir = new File("./resources/jobs");
-        this.runDir = new File(context.getTaskDir());
+        if( context == null ) {
+            this.runDir = new File(".");
+        } else {
+            this.runDir = new File(context.getTaskDir());
+        }
         init(configFile);
     }
 
@@ -142,4 +149,9 @@ public class Configuration {
     public String getLsofCommandLine() { return lsofCommandLine; }
     public List<String> getLogfileList() { return logfileList; }
     public List<String> getProcessList() { return processList; }
+    public JobDirectory getTemplateJobManager() throws JobFileException {
+        if( this.templateJobManager == null ) this.templateJobManager = new JobDirectory(this.jobDir.getPath(), this);
+        return this.templateJobManager;
+    }
+    public File getAnalyticsJobDir() { return this.analyticsJobDir; }
 }

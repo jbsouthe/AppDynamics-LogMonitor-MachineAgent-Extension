@@ -2,7 +2,7 @@ package com.cisco.josouthe.model;
 
 import java.util.Map;
 
-public class JobModel {
+public class JobModel implements Cloneable {
     private int version;
     private boolean enabled;
     private Map<String,Object> source;
@@ -97,4 +97,6 @@ public class JobModel {
     public void setRequestGuid(RequestGuid requestGuid) {
         this.requestGuid = requestGuid;
     }
+
+    public Object clone() throws CloneNotSupportedException { return super.clone(); }
 }

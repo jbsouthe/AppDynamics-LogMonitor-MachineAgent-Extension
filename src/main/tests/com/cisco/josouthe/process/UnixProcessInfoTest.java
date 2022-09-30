@@ -5,8 +5,6 @@ import com.cisco.josouthe.config.Configuration;
 import junit.framework.TestCase;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.List;
 
@@ -18,13 +16,11 @@ public class UnixProcessInfoTest extends TestCase {
 
     }
 
-    @Before
     public void setUp() throws Exception {
         Configurator.setAllLevels("", Level.ALL);
         this.configuration = new Configuration(null, null);
     }
 
-    @Test
     public void testUnixProcessListing() {
         RunCommand psHeader = new RunCommand("/bin/bash", "-c", "/bin/ps -ef |head -1");
         String[] psOutputHeaderColumns = psHeader.getStdOut().trim().split("\\s+");

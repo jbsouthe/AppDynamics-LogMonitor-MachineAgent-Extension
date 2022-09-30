@@ -1,5 +1,6 @@
 package com.cisco.josouthe.jobs;
 
+import com.cisco.josouthe.Utility;
 import com.cisco.josouthe.config.Configuration;
 import com.cisco.josouthe.model.JobModel;
 import io.krakens.grok.api.Grok;
@@ -7,9 +8,12 @@ import io.krakens.grok.api.GrokCompiler;
 import io.krakens.grok.api.Match;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -26,6 +30,12 @@ public class JobFile {
     private JobModel model;
     private GrokCompiler grok;
     private Configuration configuration;
+
+    private JobFile( JobFile other, File file ) throws CloneNotSupportedException {
+        this.configuration= other.configuration;
+        this.model = (JobModel) other.model.clone();
+        this.jobFileHandle = file;
+    }
 
     public JobFile(File jobFile, JobModel jobModel, Configuration configuration) {
         this.configuration=configuration;
@@ -94,5 +104,25 @@ public class JobFile {
 
     private long countTotalPossibleMatches( String grokPattern ) {
         return Arrays.stream(grokPattern.split("\\%\\{")).count();
+    }
+
+    public JobFile copy( File targetDir, String path, String nameGlob ) throws IOException, CloneNotSupportedException {
+        String basename = this.jobFileHandle.getName().substring(0,this.jobFileHandle.getName().lastIndexOf(".") );
+        File file = File.createTempFile(String.format("auto-%s-",basename), ".job", targetDir);
+        logger.debug("Job File designated: "+ file.getAbsolutePath());
+        file.deleteOnExit();
+        JobFile jobFile = new JobFile(this, file );
+        jobFile.setSourceInfo(path, nameGlob);
+        PrintWriter printWriter = new PrintWriter(file);
+        Yaml yaml = new Yaml();
+        yaml.dump(this.model, printWriter);
+        return jobFile;
+    }
+
+    public void delete() { this.jobFileHandle.delete(); }
+
+    private void setSourceInfo(String path, String nameGlob) {
+        this.model.getSource().put("path",path);
+        this.model.getSource().put("nameGlob",nameGlob);
     }
 }

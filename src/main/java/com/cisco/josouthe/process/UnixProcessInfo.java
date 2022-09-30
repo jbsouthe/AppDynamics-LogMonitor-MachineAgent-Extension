@@ -33,7 +33,7 @@ public class UnixProcessInfo implements ProcessInfo {
             logger.debug("ps success output: "+ psCommand.getStdOut());
             for( String line : psCommand.getStdOut().split("\\n") ) {
                 ProcessDetails processDetail = new ProcessDetails(name, line.trim(), psOutputHeaderColumns);
-                processDetail.openFileList = getOpenFiles( processDetail.pid );
+                processDetail.setOpenFileList( getOpenFiles( processDetail.getPid() ) );
                 processDetails.add(processDetail);  //say this five times fast
             }
         } else {

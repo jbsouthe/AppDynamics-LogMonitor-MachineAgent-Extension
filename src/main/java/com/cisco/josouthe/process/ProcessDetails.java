@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProcessDetails {
-    public String name;
-    public Long pid;
-    public String command;
-    public List<OpenFile> openFileList = new ArrayList<>();
+    private String name;
+    private Long pid;
+    private String command;
+    private List<OpenFile> openFileList = new ArrayList<>();
 
     public ProcessDetails(String name, String psLine, String[] psOutputHeaderColumns) {
         this.name=name;
@@ -22,6 +22,38 @@ public class ProcessDetails {
                 this.command = Utility.removeFirstElements(i,psLineArray);
             }
         }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getPid() {
+        return pid;
+    }
+
+    public void setPid(Long pid) {
+        this.pid = pid;
+    }
+
+    public String getCommand() {
+        return command;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
+    }
+
+    public List<OpenFile> getOpenFileList() {
+        return openFileList;
+    }
+
+    public void setOpenFileList(List<OpenFile> openFileList) {
+        this.openFileList = openFileList;
     }
 
     public String toString() {
