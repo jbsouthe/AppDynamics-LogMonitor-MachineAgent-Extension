@@ -8,7 +8,7 @@ version: 2
 
 # Optional property. Defaults to "false"
 #
-enabled: false
+enabled: true
 
 # Mandatory property.
 #
