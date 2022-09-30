@@ -1,6 +1,7 @@
 package com.cisco.josouthe.jobs;
 
 import com.cisco.josouthe.config.Configuration;
+import com.cisco.josouthe.model.JobModel;
 import io.krakens.grok.api.Grok;
 import io.krakens.grok.api.GrokCompiler;
 import io.krakens.grok.api.Match;
@@ -8,10 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Map;
 

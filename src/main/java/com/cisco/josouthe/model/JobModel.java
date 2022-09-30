@@ -1,7 +1,6 @@
-package com.cisco.josouthe.jobs;
+package com.cisco.josouthe.model;
 
 import java.util.Map;
-import com.cisco.josouthe.jobs.model.*;
 
 public class JobModel {
     private int version;

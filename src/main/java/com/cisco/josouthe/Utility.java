@@ -1,6 +1,10 @@
 package com.cisco.josouthe;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Utility {
     public static String toString(Object[] a) {
@@ -46,5 +50,14 @@ public class Utility {
             sb.append(" ").append(string);
         }
         return sb.toString().trim();
+    }
+
+    public static File[] listFiles( File dir, String pattern) {
+        return dir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return Pattern.compile(pattern.replace("?", ".?").replace("*", ".*?")).matcher(name).matches();
+            }
+        });
     }
 }

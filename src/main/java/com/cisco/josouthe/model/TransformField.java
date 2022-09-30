@@ -1,4 +1,4 @@
-package com.cisco.josouthe.jobs.model;
+package com.cisco.josouthe.model;
 
 public class TransformField {
     private String field, type, alias;

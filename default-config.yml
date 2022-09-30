@@ -1,0 +1,22 @@
+#default configuration, this can be edited, and should be copied to a new file in case of upgrade
+grokDirectory: ./grok
+jobDirectory: ./jobs
+
+#we will create the job files here: {analyticsDirectory}/conf/job
+#this is optional, we will try and determine this automatically
+#analyticsDirectory: ../analytics-agent
+
+#operating system specific commands
+psCommand: "/bin/ps -ef"
+lsofCommand: "/usr/sbin/lsof -p %d"
+
+#windows would have these:
+#psCommand: pslist.exe
+#lsofCommand: "handle.exe -p %d"
+
+process:
+  - java
+  - -Dappdynamics.com
+
+logs:
+  - /var/log/*.log

@@ -1,0 +1,25 @@
+<monitor>
+    <name>AppDynamics Log Monitor Automation Extension</name>
+    <type>managed</type>
+    <enabled>true</enabled>
+    <description>AppDynamics Log Monitor Automation Extension</description>
+    <display-name>AppDynamics Log Monitor Automation Extension</display-name>
+    <monitor-configuration>
+
+    </monitor-configuration>
+    <monitor-run-task>
+        <task-arguments>
+            <argument name="config-file" is-required="true" default-value="./default-config.yml" />
+        </task-arguments>
+        <type>java</type>
+        <execution-style>scheduled</execution-style>
+        <java-task>
+            <impl-class>
+                com.cisco.josouthe.ProcessLogMonitor
+            </impl-class>
+            <classpath>lib</classpath>
+            <load-jars-in-classpath-dirs>true</load-jars-in-classpath-dirs>
+        </java-task>
+    </monitor-run-task>
+</monitor>
+

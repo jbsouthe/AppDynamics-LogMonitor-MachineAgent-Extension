@@ -14,8 +14,8 @@
                 <include>Changelog.md</include>
                 <include>LICENSE</include>
                 <include>NOTICE.txt</include>
-                <include>log4j2.xml</include>
-                <include>monitor-EXAMPLE.xml</include>
+                <include>monitor.xml</include>
+                <include>default-config.yml</include>
             </includes>
             <lineEnding>unix</lineEnding>
             <fileMode>0644</fileMode>
@@ -25,16 +25,17 @@
             <outputDirectory>LogMonitor/lib</outputDirectory>
             <includes>
                 <include>commons-*.jar</include>
-                <include>gson-*.jar</include>
-                <include>http*.jar</include>
-                <include>log4j*.jar</include>
+                <include>hamcrest-*.jar</include>
+                <include>java-grok-*.jar</include>
+                <include>log4j-*.jar</include>
+                <include>snakeyaml-*.jar</include>
             </includes>
         </fileSet>
     </fileSets>
     <files>
         <file>
             <source>LogMonitorExtension-${pom.version}.jar</source>
-            <outputDirectory>LogMonitor</outputDirectory>
+            <outputDirectory>LogMonitor/lib</outputDirectory>
             <destName>LogMonitorExtension.jar</destName>
         </file>
     </files>

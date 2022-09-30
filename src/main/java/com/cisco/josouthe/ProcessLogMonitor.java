@@ -21,7 +21,7 @@ public class ProcessLogMonitor extends AManagedMonitor {
     @Override
     public TaskOutput execute(Map<String, String> map, TaskExecutionContext taskExecutionContext) throws TaskExecutionException {
         if( configuration == null ) {
-            this.configuration = new Configuration(map.get("config-file"), taskExecutionContext.getLogger());
+            this.configuration = new Configuration(map.get("config-file"), taskExecutionContext);
         } else {
             this.configuration.init(map.get("config-file"));
         }

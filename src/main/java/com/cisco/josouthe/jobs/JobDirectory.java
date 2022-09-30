@@ -1,6 +1,7 @@
 package com.cisco.josouthe.jobs;
 
 import com.cisco.josouthe.config.Configuration;
+import com.cisco.josouthe.model.JobModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.yaml.snakeyaml.Yaml;

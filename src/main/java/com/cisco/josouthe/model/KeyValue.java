@@ -1,4 +1,4 @@
-package com.cisco.josouthe.jobs.model;
+package com.cisco.josouthe.model;
 
 import java.util.List;
 

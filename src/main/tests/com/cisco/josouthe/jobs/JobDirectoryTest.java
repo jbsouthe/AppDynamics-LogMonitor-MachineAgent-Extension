@@ -20,7 +20,7 @@ public class JobDirectoryTest extends TestCase {
     }
 
     @Test
-    public void testJobDirectoryInit() throws JobFileException {
+    public void testJobDirectoryInit() throws Exception, JobFileException {
         JobDirectory jobDirectory = new JobDirectory("./test-jobdir", new Configuration(null, null));
 
         JobFile jobFile = jobDirectory.findBestMatch(new File("./test-jobdir/sample-apache-access-log.log"));

@@ -1,4 +1,4 @@
-package com.cisco.josouthe.jobs.model;
+package com.cisco.josouthe.model;
 
 public class RequestGuid {
     private String source;
