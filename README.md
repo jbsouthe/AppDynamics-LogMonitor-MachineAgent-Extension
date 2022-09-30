@@ -6,7 +6,7 @@ This extension allows customers to use the Machine Agent along with the Machine 
 * test a sample of the log file found to see which type of file it is 
 * create a new Job file for the log file in the Analytics Agent Job directory
 * This job file will inform the analytics agent to begin monitoring based on those rules
-* When the Machine Agent shuts down, all generated job files are deleted automatically, allowing a fresh start to start a new
+* When the Machine Agent shuts down, all generated job files are deleted automatically.  This allows for re-detection of application processes and associated log files and updated log file message format matching
 
 ## Configuration Steps:
 1. install the AppDynamics Machine Agent
