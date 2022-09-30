@@ -31,6 +31,20 @@
                 <include>snakeyaml-*.jar</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>resources/grok</directory>
+            <outputDirectory>LogMonitor/grok</outputDirectory>
+            <includes>
+                <include>*.grok</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>resources/jobs</directory>
+            <outputDirectory>LogMonitor/jobs</outputDirectory>
+            <includes>
+                <include>*.job</include>
+            </includes>
+        </fileSet>
     </fileSets>
     <files>
         <file>

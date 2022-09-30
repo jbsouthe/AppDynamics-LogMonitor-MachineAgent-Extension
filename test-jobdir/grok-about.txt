@@ -1,7 +1,0 @@
-1. Create a file under /src/dist/conf/grok with an extension .grok.
-   Example: custom.grok
-
-2. Add custom grok patterns.
-   Example: POSTGRES_TIMESTAMP %{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{TIME}
-
-3. Start the analytics-agent

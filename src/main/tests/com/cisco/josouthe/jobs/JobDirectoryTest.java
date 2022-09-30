@@ -12,6 +12,7 @@ import java.io.File;
 public class JobDirectoryTest extends TestCase {
     private JobDirectory jobDirectory;
     private JobFile jobFile;
+    private String testGrokDirName = "./resources/jobs";
 
     public JobDirectoryTest() {}
 
@@ -20,9 +21,9 @@ public class JobDirectoryTest extends TestCase {
     }
 
     public void testJobDirectoryInit() throws Exception, JobFileException {
-        jobDirectory = new JobDirectory("./test-jobdir", new Configuration(null, null));
+        jobDirectory = new JobDirectory(testGrokDirName, new Configuration(null, null));
 
-        jobFile = jobDirectory.findBestMatch(new File("./test-jobdir/sample-apache-access-log.log"));
+        jobFile = jobDirectory.findBestMatch(new File(testGrokDirName+"/sample-apache-httpserver-access.log"));
         assert jobFile.getJobFileHandle().getName().equals("sample-apache-httpserver-access-log.job");
 
         JobFile copyJobFile = jobFile.copy(new File("./target"), "someDir", "nameGlobThing");
