@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /*
 need to specify processes and point to a directory to examine all logs files in, say for example, /var/log/*.log
@@ -36,6 +38,7 @@ public class Configuration {
     private String lsofCommandLine = "lsof -p %d";
     private List<String> logfileList;
     private List<String> processList;
+    private List<Pattern> excludeRegexList;
     private JobDirectory templateJobManager;
 
     public Configuration(String configFile, TaskExecutionContext context) throws TaskExecutionException {
@@ -99,6 +102,7 @@ public class Configuration {
             this.lsofCommandLine = configurationModel.getLsofCommand();
             this.processList = configurationModel.getProcess();
             this.logfileList = configurationModel.getLogs();
+            this.excludeRegexList = configurationModel.getExcludeLogsRegexList();
         } catch (Exception exception) {
             throw new TaskExecutionException(String.format("Error reading configuration file: %s Exception: %s",this.configFileName, exception));
         }
@@ -139,6 +143,14 @@ public class Configuration {
                 }
             });
         }
+    }
+
+    public boolean excludeLogFile( String filename ) {
+        if( this.excludeRegexList == null || this.excludeRegexList.size() == 0 ) return false;
+        for( Pattern pattern : this.excludeRegexList ) {
+            if( pattern.matcher(filename).matches() ) return true;
+        }
+        return false;
     }
 
     public Logger getLogger() { return logger; }

@@ -71,6 +71,10 @@ public class JobDirectory {
     }
 
     public JobFile findBestMatch( File logFile ) throws JobFileException {
+        if(configuration.excludeLogFile(logFile.getAbsolutePath())) {
+            logger.debug(String.format("Excluding this logfile because it is matched to an exclusion regex: '%s'",logFile.getAbsolutePath()));
+            return null;
+        }
         String sampleLines = readSampleLines(logFile);
         JobFile bestMatchSoFar = null;
         double bestTestResult = 0.0d;
@@ -81,6 +85,10 @@ public class JobDirectory {
                 bestTestResult=testResult;
                 bestMatchSoFar=jobFile;
             }
+        }
+        if( bestMatchSoFar == null ) {
+            bestMatchSoFar = greedyJobFile;
+            logger.debug("Best match so far is pretty bad, so setting to the built in greedy job file");
         }
         logger.info(String.format("Best Match for %s is %s", logFile.getAbsolutePath(), bestMatchSoFar.getJobFileHandle().getName()));
         return bestMatchSoFar;
