@@ -1,0 +1,5 @@
+Todo list:
+
+* add the ability to exclude files with certain features
+* create a greedy catch all job rule in the package, for use when no job file matches a log file
+
