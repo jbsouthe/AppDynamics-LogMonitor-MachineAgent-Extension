@@ -8,6 +8,8 @@ This extension allows customers to use the Machine Agent along with the Machine 
 * This job file will inform the analytics agent to begin monitoring based on those rules
 * When the Machine Agent shuts down, all generated job files are deleted automatically.  This allows for re-detection of application processes and associated log files and updated log file message format matching
 
+note: the monitored log files won't be displayed anywhere on the controller, but the logs and their data will be seen in the Analytics Log Schema "select * from logs" will show them.
+
 ## Configuration Steps:
 1. install the AppDynamics Machine Agent
 2. enable and configure the analytics agent extension in the ./monitors/analytics-agent
