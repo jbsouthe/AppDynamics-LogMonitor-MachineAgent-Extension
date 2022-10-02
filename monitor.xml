@@ -18,7 +18,7 @@
                 <java-task>
                         <classpath>lib</classpath>
 			<load-jars-in-classpath-dirs>true</load-jars-in-classpath-dirs>
-                        <impl-class>com.cisco.josouthe.ProcessLogMonitor</impl-class>
+                        <impl-class>com.appdynamics.machineagent.logmonitor.ProcessLogMonitor</impl-class>
                 </java-task>
         </monitor-run-task>
 </monitor>

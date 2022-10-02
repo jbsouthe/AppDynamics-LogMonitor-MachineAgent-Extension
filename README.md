@@ -35,7 +35,7 @@ the monitor.xml file is used for the machine agent config, it contains:
             <execution-style>scheduled</execution-style>
             <java-task>
                 <impl-class>
-                    com.cisco.josouthe.ProcessLogMonitor
+                    com.appdynamics.machineagent.logmonitor.ProcessLogMonitor
                 </impl-class>
                 <classpath>lib</classpath>
                 <load-jars-in-classpath-dirs>true</load-jars-in-classpath-dirs>
