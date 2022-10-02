@@ -1,0 +1,7 @@
+enabled: true
+fields: {sourceType: greedy-logfile}
+grok:
+   patterns:
+     - "%{GREEDYDATA}"
+source: {type: file, path: somePath, nameGlob: filename, startAtEnd: false}
+version: 2

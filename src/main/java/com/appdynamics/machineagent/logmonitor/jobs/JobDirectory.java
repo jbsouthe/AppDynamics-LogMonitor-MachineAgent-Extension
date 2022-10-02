@@ -23,6 +23,8 @@ public class JobDirectory {
 
     private File directoryFile;
     private Map<String,JobFile> fileMap;
+    private JobFile greedyJobFile;
+    Yaml yaml;
     private FilenameFilter jobFileNameFilter;
     private long lastScanTime;
     private Configuration configuration;
@@ -30,7 +32,15 @@ public class JobDirectory {
     public JobDirectory( String dirName, Configuration configuration) throws JobFileException {
         this.configuration=configuration;
         directoryFile = new File(dirName);
+        this.yaml = new Yaml(new Constructor(JobModel.class));
         if( !directoryFile.exists() || !directoryFile.isDirectory() ) throw new JobFileException("Directory does not exist: "+ dirName);
+        try {
+            File greedyJobFile = new File(getClass().getResource("/GreedyCatchAll.job").toURI());
+            this.greedyJobFile = new JobFile(greedyJobFile, yaml.load(new FileInputStream(greedyJobFile)), configuration);
+        } catch (Exception exception) {
+            logger.warn("Could not load greedy job file from jar: "+exception);
+            throw new JobFileException("Could not load greedy job file from jar: "+exception);
+        }
         this.jobFileNameFilter = new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
@@ -45,7 +55,6 @@ public class JobDirectory {
         if( init ) {
             this.fileMap = new HashMap<>();
         }
-        Yaml yaml = new Yaml(new Constructor(JobModel.class));
         for( File file : this.directoryFile.listFiles(this.jobFileNameFilter)) {
             logger.debug("Parsing %s Job File",file.getName());
             if( !fileMap.containsKey(file.getName())
