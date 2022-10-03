@@ -62,7 +62,7 @@ public class JobFile {
     public void setJobFileHandle( File file ) { this.jobFileHandle=file; }
     public File getJobFileHandle() { return this.jobFileHandle; }
     public String toString() {
-        return String.format("Job File: %s Model: %s", this.jobFileHandle.getAbsolutePath(), model);
+        return String.format("Job File: %s Model: %s", (this.jobFileHandle == null ? "none" : this.jobFileHandle.getAbsolutePath()), model);
     }
 
 
@@ -71,13 +71,13 @@ public class JobFile {
         if( lines == null ) return 0.0d;
         long totalPossibleMatches = 0l;
         long totalActualMatches = 0l;
-        logger.warn("%s testGrok() grok: '%s'", this.jobFileHandle.getName(),(model.getGrok()!= null ? model.getGrok().getPatterns().toString() : "null"));
+        logger.debug("%s testGrok() grok: '%s'", (this.jobFileHandle == null ? "none" : this.jobFileHandle.getName()),(model.getGrok()!= null ? model.getGrok().getPatterns().toString() : "null"));
         if ( model.getGrok() == null ) { //this happens sometimes, look at sample-osx-system-log.job
             return Double.MIN_VALUE; //try not to match on this
         }
         for( String grokPattern : model.getGrok().getPatterns() ) {
             try {
-                logger.debug("Testing with grok: '%s' for job file %s", grokPattern, this.jobFileHandle.getName());
+                logger.debug("Testing with grok: '%s' for job file %s", grokPattern, (this.jobFileHandle == null ? "none" : this.jobFileHandle.getName()));
                 long possibleMatchesPerLine = countTotalPossibleMatches(grokPattern);
                 Grok compiledPattern = grok.compile(grokPattern);
                 logger.debug("compiled pattern: %s", compiledPattern.getNamedRegex());
@@ -89,7 +89,7 @@ public class JobFile {
                     logger.debug("input line '%s' grok pattern '%s' result: '%s'", line, grokPattern, groups);
                 }
             } catch(IllegalArgumentException illegalArgumentException) {
-                logger.debug("Bad Parser Job File %s Exception: %s",this.jobFileHandle.getName(), illegalArgumentException);
+                logger.debug("Bad Parser Job File %s Exception: %s",(this.jobFileHandle == null ? "none" : this.jobFileHandle.getName()), illegalArgumentException);
                 return Double.MIN_VALUE;
             }
         }
@@ -136,7 +136,7 @@ public class JobFile {
         return jobFile;
     }
 
-    public void delete() { this.jobFileHandle.delete(); }
+    public void delete() { if( this.jobFileHandle != null) this.jobFileHandle.delete(); }
 
     private void setSourceInfo(boolean enabled, String path, String nameGlob) {
         this.model.setEnabled(enabled);
