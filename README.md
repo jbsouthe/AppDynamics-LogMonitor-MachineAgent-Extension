@@ -1,5 +1,7 @@
 # AppDynamics Log Monitor Machine Agent Extension
 
+[![published](https://static.production.devnetcloud.com/codeexchange/assets/images/devnet-published.svg)](https://developer.cisco.com/codeexchange/github/repo/jbsouthe/AppDynamics-LogMonitor-MachineAgent-Extension)
+
 This extension allows customers to use the Machine Agent along with the Machine Agent Analytics Agent Extension to automatically detect and monitor log files. It is intended to support any Unix operating system as well as Windows (Windows support may vary).
 
 * identify open log files of a process with a given string match, or files in a given directory matching a string
