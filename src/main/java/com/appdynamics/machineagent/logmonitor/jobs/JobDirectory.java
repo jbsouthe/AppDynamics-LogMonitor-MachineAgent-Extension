@@ -35,8 +35,7 @@ public class JobDirectory {
         this.yaml = new Yaml(new Constructor(JobModel.class));
         if( !directoryFile.exists() || !directoryFile.isDirectory() ) throw new JobFileException("Directory does not exist: "+ dirName);
         try {
-            File greedyJobFile = new File(getClass().getResource("/GreedyCatchAll.job").toURI());
-            this.greedyJobFile = new JobFile(greedyJobFile, yaml.load(new FileInputStream(greedyJobFile)), configuration);
+            this.greedyJobFile = new JobFile(null, yaml.load(getClass().getResourceAsStream("/GreedyCatchAll.job")), configuration);
         } catch (Exception exception) {
             logger.warn("Could not load greedy job file from jar: "+exception);
             throw new JobFileException("Could not load greedy job file from jar: "+exception);
