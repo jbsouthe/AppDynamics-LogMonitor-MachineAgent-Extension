@@ -28,6 +28,13 @@ public class OpenFile {
         this.file = new File(fileName);
     }
 
+    public OpenFile( String[] lineArray ) throws FileNotFoundException { //windows handle.exe output log file lines
+        this.pid=Long.parseLong(lineArray[2]);
+        this.type=lineArray[4];
+        this.fileName=Utility.removeFirstElements(5, lineArray);
+        this.file = new File(fileName);
+    }
+
     public boolean isReadable() { return file.canRead(); }
     public boolean isAccessible() { return file.exists(); }
     public long getPid() { return pid; }
