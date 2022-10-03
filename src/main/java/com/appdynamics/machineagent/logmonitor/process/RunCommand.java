@@ -1,5 +1,6 @@
 package com.appdynamics.machineagent.logmonitor.process;
 
+import com.appdynamics.machineagent.logmonitor.Utility;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,19 +19,22 @@ public class RunCommand {
         err = new StringBuilder();
         try {
             process = Runtime.getRuntime().exec(args);
-            logger.debug("Process started: "+ process.toString());
+            logger.debug("Process started: "+ process.toString()+" command: "+ Utility.toString(args));
             isProcessRunning=true;
-            String line;
-            BufferedReader stderr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            while( (line=stderr.readLine()) != null ) err.append(line);
-            logger.debug("Process finished writing error output");
-            BufferedReader stdout = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            while( (line=stdout.readLine()) != null ) out.append(line).append("\n");
-            logger.debug("Process finished writing standard output");
+
             this.returnCode = process.waitFor();
             logger.debug("Process ended, return code "+ this.returnCode);
             isProcessRunning=false;
-            stderr.close();
+            String line;
+            if( returnCode != 0 ) {
+                BufferedReader stderr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                while ((line = stderr.readLine()) != null) err.append(line);
+                stderr.close();
+                logger.debug("Process finished writing error output");
+            }
+            BufferedReader stdout = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            while( (line=stdout.readLine()) != null ) out.append(line).append("\n");
+            logger.debug("Process finished writing standard output");
             stdout.close();
         } catch (Exception exception) {
             if( err.length() > 0 ) err.append("\n");
