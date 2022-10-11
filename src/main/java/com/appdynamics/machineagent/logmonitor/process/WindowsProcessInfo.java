@@ -29,7 +29,8 @@ public class WindowsProcessInfo implements ProcessInfo {
     @Override
     public List<ProcessDetails> getProcessList(String name) {
         List<ProcessDetails> processDetails = new ArrayList<>();
-        RunCommand psCommand = new RunCommand("cmd", "/C", String.format("%s \"%s\"",this.psCommandLine, name));
+        //RunCommand psCommand = new RunCommand("cmd", "/C", String.format("%s \"%s\"",this.psCommandLine, name));
+        RunCommand psCommand = new RunCommand(String.format("%s \"%s\"",this.psCommandLine, name));
         if( psCommand.isSuccess() ) {
             logger.debug("pslist.exe success output: "+ psCommand.getStdOut());
             for( String line : psCommand.getStdOut().split("\\n") ) {
@@ -47,7 +48,6 @@ public class WindowsProcessInfo implements ProcessInfo {
             }
         } else {
             logger.warn("Error running ps command, error: "+ psCommand.getErrOut());
-            return null;
         }
 
         return processDetails;
