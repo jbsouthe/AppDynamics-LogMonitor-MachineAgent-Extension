@@ -1,24 +1,25 @@
+
 <monitor>
-        <name>LogFileMonitor</name>
+        <name>AppDynamics Log Monitor Automation Extension</name>
         <type>managed</type>
+        <enabled>true</enabled>
         <description>AppDynamics Log Monitor Automation Extension</description>
-        <monitor-configuration></monitor-configuration>
+        <display-name>AppDynamics Log Monitor Automation Extension</display-name>
+        <monitor-configuration>
+        </monitor-configuration>
         <monitor-run-task>
-		<task-arguments>
-            		<argument name="config-file" is-required="true" default-value="./default-config.yml" />
-        	</task-arguments>
-                <execution-style>periodic</execution-style>
-                <execution-frequency-in-seconds>60</execution-frequency-in-seconds>
-                <name>Automatic Log File Monitor Run Task</name>
-                <display-name>Log File Monitor Task</display-name>
-                <description>Log File Monitor Task</description>
+                <task-arguments>
+                        <argument name="config-file" is-required="true" default-value="./default-config.yml" />
+                </task-arguments>
                 <type>java</type>
+                <execution-style>scheduled</execution-style>
                 <execution-timeout-in-secs>60</execution-timeout-in-secs>
-                <task-arguments></task-arguments>
                 <java-task>
+                        <impl-class>
+                                com.appdynamics.machineagent.logmonitor.ProcessLogMonitor
+                        </impl-class>
                         <classpath>lib</classpath>
-			<load-jars-in-classpath-dirs>true</load-jars-in-classpath-dirs>
-                        <impl-class>com.appdynamics.machineagent.logmonitor.ProcessLogMonitor</impl-class>
+                        <load-jars-in-classpath-dirs>true</load-jars-in-classpath-dirs>
                 </java-task>
         </monitor-run-task>
 </monitor>

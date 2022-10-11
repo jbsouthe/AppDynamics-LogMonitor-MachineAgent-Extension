@@ -47,14 +47,6 @@ public class Configuration {
         } else {
             this.logger = context.getLogger();
         }
-        String os = System.getProperty("os.name");
-        logger.debug(String.format("Operating System: %s", os));
-        if( os.toLowerCase().contains("windows") ) {
-            isRunningOnWindows=true;
-            this.processInfo = new WindowsProcessInfo(this);
-        } else {
-            this.processInfo = new UnixProcessInfo(this);
-        }
         this.grokDir = new File("./resources/grok");
         this.jobDir = new File("./resources/jobs");
         if( context == null ) {
@@ -83,6 +75,14 @@ public class Configuration {
                 this.configFileLastUpdate = newConfigFile.lastModified();
                 readConfigFile();
             }
+        }
+        String os = System.getProperty("os.name");
+        logger.debug(String.format("Operating System: %s", os));
+        if( os.toLowerCase().contains("windows") ) {
+            isRunningOnWindows=true;
+            this.processInfo = new WindowsProcessInfo(this);
+        } else {
+            this.processInfo = new UnixProcessInfo(this);
         }
     }
 

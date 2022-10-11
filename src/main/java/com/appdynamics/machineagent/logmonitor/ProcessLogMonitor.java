@@ -43,9 +43,11 @@ public class ProcessLogMonitor extends AManagedMonitor {
         }
 
         for( String filePattern : configuration.getLogfileList() ) {
-            for(File logFile : Utility.listFiles(filePattern) ) {
-                taskOutputStringBuilder.append( initializeLogFileMonitoring(logFile) );
-            }
+            File[] fileList = Utility.listFiles(filePattern);
+            if( fileList != null )
+                for(File logFile : fileList ) {
+                    taskOutputStringBuilder.append( initializeLogFileMonitoring(logFile) );
+                }
         }
         for( String processPattern : configuration.getProcessList() ) {
             for(ProcessDetails process : configuration.getProcessInfo().getProcessList(processPattern) ) {
