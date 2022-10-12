@@ -29,7 +29,7 @@ public class UnixProcessInfo implements ProcessInfo {
     @Override
     public List<ProcessDetails> getProcessList( String name ) {
         List<ProcessDetails> processDetails = new ArrayList<>();
-        RunCommand psCommand = new RunCommand("/bin/bash", "-c", String.format("%s | grep -v grep| grep \"%s\"",this.psCommandLine, name));
+        RunCommand psCommand = new RunCommand("/bin/bash", "-c", String.format("%s | grep -v grep| grep -- \"%s\"",this.psCommandLine, name));
         if( psCommand.isSuccess() ) {
             logger.debug("ps success output: "+ psCommand.getStdOut());
             for( String line : psCommand.getStdOut().split("\\n") ) {
@@ -39,7 +39,7 @@ public class UnixProcessInfo implements ProcessInfo {
             }
         } else {
             logger.warn("Error running ps command, error: "+ psCommand.getErrOut());
-            return null;
+            return processDetails;
         }
 
         return processDetails;
