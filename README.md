@@ -67,10 +67,17 @@ the default-config.yml should be copied and edited for customer environment
     #windows would have these:
     #psCommand: pslist.exe
     #lsofCommand: "handle.exe -p %d"
+    #to download pslist, https://download.sysinternals.com/files/PSTools.zip
+    #to download handle.exe, https://download.sysinternals.com/files/Handle.zip
+
 
     process:
-    - java
-    - -Dappdynamics.com
+      - java
+      - -Dappdynamics.com
 
     logs:
-    - /var/log/*.log
+      - /var/log/*.log
+
+    #optionally, you can exclude log files where the absolutely path matches a given regex pattern:
+    #excludeLogs:
+    #  - .*appdynamics.*
