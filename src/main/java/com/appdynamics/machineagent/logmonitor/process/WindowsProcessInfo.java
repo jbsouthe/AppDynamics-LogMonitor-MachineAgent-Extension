@@ -17,8 +17,9 @@ public class WindowsProcessInfo implements ProcessInfo {
     public WindowsProcessInfo( Configuration configuration ) {
         this.logger = configuration.getLogger();
         this.configuration=configuration;
-        this.psCommandLine=configuration.getPsCommandLine();
-        this.lsofCommandLine=configuration.getLsofCommandLine();
+        this.psCommandLine="wmic.exe process get processid,commandline /Format:csv"; //configuration.getPsCommandLine();
+        this.lsofCommandLine="handle.exe -p %d"; //configuration.getLsofCommandLine();
+        fixEULAProblem();
     }
 
     //use process explorer handle.exe to list open log files of a process, https://learn.microsoft.com/en-us/sysinternals/downloads/handle
@@ -30,24 +31,24 @@ public class WindowsProcessInfo implements ProcessInfo {
     public List<ProcessDetails> getProcessList(String name) {
         List<ProcessDetails> processDetails = new ArrayList<>();
         //RunCommand psCommand = new RunCommand("cmd", "/C", String.format("%s \"%s\"",this.psCommandLine, name));
-        RunCommand psCommand = new RunCommand(String.format("%s \"%s\"",this.psCommandLine, name));
+        RunCommand psCommand = new RunCommand(String.format("cmd /C %s",this.psCommandLine).split("\\s"));
         if( psCommand.isSuccess() ) {
             logger.debug("pslist.exe success output: "+ psCommand.getStdOut());
-            for( String line : psCommand.getStdOut().split("\\n") ) {
+            for( String line : psCommand.getStdOut().split("\\n+") ) {
                 if( psOutputHeaderColumns == null ) {
-                    String[] splitLine = line.trim().split("\\s+");
-                    if( splitLine.length > 0 && "name".equals(splitLine[0].toLowerCase()) ) {
+                    String[] splitLine = line.trim().split(",");
+                    if( splitLine.length > 0 && "node".equals(splitLine[0].toLowerCase()) ) {
                         psOutputHeaderColumns=splitLine;
                     }
                     continue;
-                } else {
-                    ProcessDetails processDetail = new ProcessDetails(name, line.trim(), psOutputHeaderColumns);
+                } else if( line.trim().length() > 0 && line.toLowerCase().contains(name.toLowerCase()) ) {
+                    ProcessDetails processDetail = new ProcessDetails(name, line.trim().split(","), psOutputHeaderColumns);
                     processDetail.setOpenFileList(getOpenFiles(processDetail.getPid()));
                     processDetails.add(processDetail);  //say this five times fast
                 }
             }
         } else {
-            logger.warn("Error running ps command, error: "+ psCommand.getErrOut());
+            logger.warn(String.format("Error running %s, error: %s", psCommand.toString(), psCommand.getStdOut()));
         }
 
         return processDetails;
@@ -63,7 +64,7 @@ public class WindowsProcessInfo implements ProcessInfo {
                 if( line.toLowerCase().endsWith(".log") ) {
                     logger.debug("processing possible log file: "+ line);
                     try {
-                        OpenFile openFile = new OpenFile(line.trim().split("\\s+"));
+                        OpenFile openFile = new OpenFile(pid, line.trim().split("\\s+"));
                         logger.debug(openFile);
                         openFileList.add(openFile);
                     }catch (FileNotFoundException fileNotFoundException) {
@@ -73,5 +74,20 @@ public class WindowsProcessInfo implements ProcessInfo {
             }
         }
         return openFileList;
+    }
+
+    private void fixEULAProblem() {
+        RunCommand regEdit = new RunCommand( "reg ADD HKCU\\Software\\Sysinternals\\PSexec /v EulaAccepted /t REG_DWORD /d 1 /f".split("\\s+"));
+        if(regEdit.isSuccess()) {
+            logger.debug("Fixed windows registry issue where pslist.exe asks for EULA acceptance on first run");
+        } else {
+            logger.warn("Tried to fix EULA acceptance for pslist.exe, but was not successful, this will not run, please report the issue and and environment specifications to the maintainer");
+        }
+        regEdit = new RunCommand( "reg ADD HKCU\\Software\\Sysinternals\\Handle /v EulaAccepted /t REG_DWORD /d 1 /f".split("\\s+"));
+        if(regEdit.isSuccess()) {
+            logger.debug("Fixed windows registry issue where handle.exe asks for EULA acceptance on first run");
+        } else {
+            logger.warn("Tried to fix EULA acceptance for handle.exe, but was not successful, this will not run, please report the issue and and environment specifications to the maintainer");
+        }
     }
 }

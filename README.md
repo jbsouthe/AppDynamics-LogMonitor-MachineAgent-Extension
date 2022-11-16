@@ -60,9 +60,8 @@ the default-config.yml should be copied and edited for customer environment
     #this is optional, we will try and determine this automatically
     #analyticsDirectory: ../analytics-agent
 
-    #operating system specific commands
-    psCommand: "/bin/ps -ef"
-    lsofCommand: "/usr/sbin/lsof -p %d"
+    #operating system specific commands for unix
+    "
 
     #windows would have these:
     #psCommand: pslist.exe

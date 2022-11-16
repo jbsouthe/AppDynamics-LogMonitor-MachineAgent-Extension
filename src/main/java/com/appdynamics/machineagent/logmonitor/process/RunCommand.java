@@ -6,39 +6,41 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 
 public class RunCommand {
     private static final Logger logger = LogManager.getFormatterLogger();
-    private int returnCode;
-    private StringBuilder out, err;
+    private int returnCode=0;
+    private StringBuilder out;
     private Process process;
     private boolean isProcessRunning=false;
+    private String commandAndArguments;
 
     public RunCommand( String... args ) {
+        this.commandAndArguments = printArgs(args,0);
         out = new StringBuilder();
-        err = new StringBuilder();
         try {
-            process = Runtime.getRuntime().exec(args);
+            ProcessBuilder processBuilder = new ProcessBuilder(args);
+            processBuilder.redirectErrorStream(true);
+            process = processBuilder.start();
             logger.debug("Process started: "+ process.toString()+" command: "+ Utility.toString(args));
             isProcessRunning=true;
+            //this.returnCode = process.waitFor();
 
-            this.returnCode = process.waitFor();
-            logger.debug("Process ended, return code "+ this.returnCode);
-            isProcessRunning=false;
             String line;
-            if( returnCode != 0 ) {
-                BufferedReader stderr = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                while ((line = stderr.readLine()) != null) err.append(line);
-                stderr.close();
-                logger.debug("Process finished writing error output");
-            }
             BufferedReader stdout = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            while( (line=stdout.readLine()) != null ) out.append(line).append("\n");
-            logger.debug("Process finished writing standard output");
+            while( (line=stdout.readLine()) != null ) {
+                //logger.debug("line: "+ line.trim());
+                out.append(line.trim());
+                if( !line.endsWith("\\n")) out.append("\n");
+            }
+            logger.trace("Process finished writing standard output: "+ out.toString());
             stdout.close();
+            this.returnCode = process.waitFor();
+            isProcessRunning=false;
+            logger.debug("Process ended, return code "+ this.returnCode);
         } catch (Exception exception) {
-            if( err.length() > 0 ) err.append("\n");
-            err.append(String.format("Error running command '%s' with arguments '%s', Exception: %s",args[0], printArgs(args,1), exception));
+            logger.warn(String.format("Error running command '%s' with arguments '%s', Exception: %s",args[0], printArgs(args,1), exception));
         }
     }
 
@@ -59,5 +61,8 @@ public class RunCommand {
     public boolean isRunning() { return this.isProcessRunning; }
     public int getReturnCode() { return returnCode; }
     public String getStdOut() { return out.toString(); }
-    public String getErrOut() { return err.toString(); }
+
+    public String toString() {
+        return String.format("RunCommand: '%s' Running: %s Return Code: %d",this.commandAndArguments, isRunning(), (isRunning() ? "N/A" :getReturnCode()));
+    }
 }

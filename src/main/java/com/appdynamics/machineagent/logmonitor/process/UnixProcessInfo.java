@@ -19,8 +19,8 @@ public class UnixProcessInfo implements ProcessInfo {
     public UnixProcessInfo( Configuration configuration ) {
         this.logger = configuration.getLogger();
         this.configuration=configuration;
-        this.psCommandLine=configuration.getPsCommandLine();
-        this.lsofCommandLine=configuration.getLsofCommandLine();
+        this.psCommandLine="/bin/ps -ef"; //configuration.getPsCommandLine();
+        this.lsofCommandLine="lsof -p %d"; //configuration.getLsofCommandLine();
         RunCommand psHeader = new RunCommand("/bin/bash", "-c", String.format("%s |head -1", this.psCommandLine));
         this.psOutputHeaderColumns = psHeader.getStdOut().trim().split("\\s+");
         //logger.debug(String.format("psOutputHeader size: %d elements: '%s'",this.psOutputHeaderColumns.length, Utility.toString(this.psOutputHeaderColumns)));
@@ -33,12 +33,12 @@ public class UnixProcessInfo implements ProcessInfo {
         if( psCommand.isSuccess() ) {
             logger.debug("ps success output: "+ psCommand.getStdOut());
             for( String line : psCommand.getStdOut().split("\\n") ) {
-                ProcessDetails processDetail = new ProcessDetails(name, line.trim(), psOutputHeaderColumns);
+                ProcessDetails processDetail = new ProcessDetails(name, line.trim().split("\\s+"), psOutputHeaderColumns);
                 processDetail.setOpenFileList( getOpenFiles( processDetail.getPid() ) );
                 processDetails.add(processDetail);  //say this five times fast
             }
         } else {
-            logger.warn("Error running ps command, error: "+ psCommand.getErrOut());
+            logger.warn("Error running ps command, error: "+ psCommand.getStdOut());
             return processDetails;
         }
 

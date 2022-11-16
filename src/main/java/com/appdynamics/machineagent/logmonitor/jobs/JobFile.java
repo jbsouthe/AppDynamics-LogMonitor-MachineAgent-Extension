@@ -77,16 +77,16 @@ public class JobFile {
         }
         for( String grokPattern : model.getGrok().getPatterns() ) {
             try {
-                logger.debug("Testing with grok: '%s' for job file %s", grokPattern, (this.jobFileHandle == null ? "none" : this.jobFileHandle.getName()));
+                logger.trace("Testing with grok: '%s' for job file %s", grokPattern, (this.jobFileHandle == null ? "none" : this.jobFileHandle.getName()));
                 long possibleMatchesPerLine = countTotalPossibleMatches(grokPattern);
                 Grok compiledPattern = grok.compile(grokPattern);
-                logger.debug("compiled pattern: %s", compiledPattern.getNamedRegex());
+                logger.trace("compiled pattern: %s", compiledPattern.getNamedRegex());
                 for (String line : lines.split("\\n")) {
                     totalPossibleMatches += possibleMatchesPerLine;
                     Match gm = compiledPattern.match(line);
                     Map<String, Object> groups = gm.capture();
                     totalActualMatches += countTotalActualMatches(groups);
-                    logger.debug("input line '%s' grok pattern '%s' result: '%s'", line, grokPattern, groups);
+                    logger.trace("input line '%s' grok pattern '%s' result: '%s'", line, grokPattern, groups);
                 }
             } catch(IllegalArgumentException illegalArgumentException) {
                 logger.debug("Bad Parser Job File %s Exception: %s",(this.jobFileHandle == null ? "none" : this.jobFileHandle.getName()), illegalArgumentException);

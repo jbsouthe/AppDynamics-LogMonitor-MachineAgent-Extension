@@ -28,10 +28,10 @@ public class OpenFile {
         this.file = new File(fileName);
     }
 
-    public OpenFile( String[] lineArray ) throws FileNotFoundException { //windows handle.exe output log file lines
-        this.pid=Long.parseLong(lineArray[2]);
-        this.type=lineArray[4];
-        this.fileName=Utility.removeFirstElements(5, lineArray);
+    public OpenFile( long pid, String[] lineArray ) throws FileNotFoundException { //windows handle.exe output log file lines
+        this.pid=pid;
+        this.type=lineArray[1];
+        this.fileName=Utility.removeFirstElements(3, lineArray);
         this.file = new File(fileName);
     }
 

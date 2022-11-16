@@ -1,27 +1,30 @@
 package com.appdynamics.machineagent.logmonitor.process;
 
 import com.appdynamics.machineagent.logmonitor.Utility;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProcessDetails {
+    private static final Logger logger = LogManager.getFormatterLogger();
     private String name;
     private Long pid;
     private String command;
     private List<OpenFile> openFileList = new ArrayList<>();
 
-    public ProcessDetails(String name, String psLine, String[] psOutputHeaderColumns) {
-        this.name=name;
-        String[] psLineArray = psLine.trim().split("\\s+");
+    public ProcessDetails(String name, String[] psLineArray, String[] psOutputHeaderColumns) {
+        setName(name);
         for( int i=0; i< psOutputHeaderColumns.length; i++) {
-            if( psOutputHeaderColumns[i].toLowerCase().equals("pid") ) {
-                this.pid = Long.parseLong(psLineArray[i]);
+            if( psOutputHeaderColumns[i].toLowerCase().equals("pid") || psOutputHeaderColumns[i].toLowerCase().equals("processid")) {
+                setPid(Long.parseLong(psLineArray[i]));
             }
-            if( psOutputHeaderColumns[i].toLowerCase().equals("cmd") ) {
-                this.command = Utility.removeFirstElements(i,psLineArray);
+            if( psOutputHeaderColumns[i].toLowerCase().equals("cmd") || psOutputHeaderColumns[i].toLowerCase().equals("commandline") ) {
+                setCommand(Utility.removeFirstElements(i,psLineArray));
             }
         }
+        logger.debug(String.format("Initialized Process Detail: %s", this));
     }
 
     public String getName() {
@@ -54,6 +57,7 @@ public class ProcessDetails {
 
     public void setOpenFileList(List<OpenFile> openFileList) {
         this.openFileList = openFileList;
+        logger.debug("ProcessDetail.setOpenFileList() on %s",this);
     }
 
     public String toString() {
