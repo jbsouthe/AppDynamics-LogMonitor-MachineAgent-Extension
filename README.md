@@ -61,12 +61,9 @@ the default-config.yml should be copied and edited for customer environment
     #analyticsDirectory: ../analytics-agent
 
     #operating system specific commands for unix
-    "
+    #/bin/ps and lsof in the PATH
 
-    #windows would have these:
-    #psCommand: pslist.exe
-    #lsofCommand: "handle.exe -p %d"
-    #to download pslist, https://download.sysinternals.com/files/PSTools.zip
+    #windows would have these: wmic.exe and handle.exe
     #to download handle.exe, https://download.sysinternals.com/files/Handle.zip
 
 
