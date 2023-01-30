@@ -73,6 +73,7 @@ the default-config.yml should be copied and edited for customer environment
 
     logs:
       - /var/log/*.log
+      - /var/log/*/*.log
 
     #optionally, you can exclude log files where the absolutely path matches a given regex pattern:
     #excludeLogs:

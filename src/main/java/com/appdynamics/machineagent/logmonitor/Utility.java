@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,15 +59,37 @@ public class Utility {
     }
 
     public static File[] listFiles( String patternWithDir ) {
-        return listFiles( new File(patternWithDir.substring(0,patternWithDir.lastIndexOf("/"))), patternWithDir.substring(patternWithDir.lastIndexOf("/")+1));
+        List<File> fileList = new ArrayList<>();
+        listFiles( patternWithDir, new File(patternWithDir.substring(0,patternWithDir.indexOf("/"))), patternWithDir.substring(patternWithDir.indexOf("/")+1), fileList);
+        return fileList.toArray( new File[0] );
     }
-    public static File[] listFiles( File dir, String pattern) {
-        return dir.listFiles(new FilenameFilter() {
+    public static void listFiles( String orignalPatternWithDir, File subDir, String pattern, List<File> fileList) {
+        //System.out.println(String.format("Dir: %s Pattern: '%s' fileList: %d", subDir.toString(), pattern, fileList.size()));
+        File[] files = subDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return Pattern.compile(pattern.replace("?", ".?").replace("*", ".*?")).matcher(name).matches();
+                File file = new File(dir, name);
+                //System.out.println(String.format("Testing Pattern: '%s' File: '%s' isDir: %s",orignalPatternWithDir, file.toString(), file.isDirectory()));
+                if( file.isDirectory() && dirPatternMatches(orignalPatternWithDir, file.toString())) {
+                    listFiles(orignalPatternWithDir, file, pattern.substring(pattern.indexOf("/")+1), fileList);
+                    return false;
+                } else {
+                    return filePatternMatches(pattern, name);
+                }
             }
         });
+        if( files != null && files.length >0 )
+            for (File file : files)
+                fileList.add(file);
+    }
+
+    private static boolean dirPatternMatches( String pattern, String name ) {
+        if( pattern.startsWith(name) ) return true;
+        return filePatternMatches( pattern.substring(0, pattern.lastIndexOf("/")), name );
+    }
+
+    private static boolean filePatternMatches( String pattern, String name) {
+        return Pattern.compile(pattern.replace("?", ".?").replace("*", ".*?")).matcher(name).matches();
     }
 
     public static void copyFiles(File sourceLocation, File targetLocation) throws IOException {
