@@ -1,18 +1,26 @@
 package com.appdynamics.machineagent.logmonitor;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.FileVisitOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class Utility {
+    private static final Logger logger = LogManager.getFormatterLogger();
+
     public static String toString(Object[] a) {
         if (a == null)
             return "null";
@@ -60,37 +68,28 @@ public class Utility {
 
     public static File[] listFiles( String patternWithDir ) {
         List<File> fileList = new ArrayList<>();
-        listFiles( patternWithDir, new File(patternWithDir.substring(0,patternWithDir.indexOf("/"))), patternWithDir.substring(patternWithDir.indexOf("/")+1), fileList);
+        PathMatcher pathMatcher = FileSystems.getDefault().getPathMatcher("glob:"+patternWithDir);
+        File baseDir = getBaseDir(patternWithDir);
+        logger.debug("Base Dir: %s", baseDir.toString());
+        try(Stream<Path> stream = Files.walk(baseDir.toPath(), FileVisitOption.FOLLOW_LINKS)) {
+            stream.filter(pathMatcher::matches).forEach( file -> fileList.add(file.toFile()) );
+        } catch (Exception exception) {
+            logger.warn("IOException trying to find log files, pattern: '%s' Exception: %s",patternWithDir, exception, exception);
+        }
+        logger.info("Log Files for pattern '%s' returning list(%d): %s", patternWithDir, fileList.size(), fileList);
         return fileList.toArray( new File[0] );
     }
-    public static void listFiles( String orignalPatternWithDir, File subDir, String pattern, List<File> fileList) {
-        //System.out.println(String.format("Dir: %s Pattern: '%s' fileList: %d", subDir.toString(), pattern, fileList.size()));
-        File[] files = subDir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                File file = new File(dir, name);
-                //System.out.println(String.format("Testing Pattern: '%s' File: '%s' isDir: %s",orignalPatternWithDir, file.toString(), file.isDirectory()));
-                if( file.isDirectory() && dirPatternMatches(orignalPatternWithDir, file.toString())) {
-                    listFiles(orignalPatternWithDir, file, pattern.substring(pattern.indexOf("/")+1), fileList);
-                    return false;
-                } else {
-                    return filePatternMatches(pattern, name);
-                }
-            }
-        });
-        if( files != null && files.length >0 )
-            for (File file : files)
-                fileList.add(file);
+
+    private static File getBaseDir( String pattern ) {
+        if( pattern.contains("*") ) {
+            pattern = pattern.substring(0, pattern.indexOf("*") );
+        }
+        if( pattern.contains("?") ) {
+            pattern = pattern.substring(0, pattern.indexOf("?") );
+        }
+        return new File(pattern.substring(0, pattern.lastIndexOf("/")));
     }
 
-    private static boolean dirPatternMatches( String pattern, String name ) {
-        if( pattern.startsWith(name) ) return true;
-        return filePatternMatches( pattern.substring(0, pattern.lastIndexOf("/")), name );
-    }
-
-    private static boolean filePatternMatches( String pattern, String name) {
-        return Pattern.compile(pattern.replace("?", ".?").replace("*", ".*?")).matcher(name).matches();
-    }
 
     public static void copyFiles(File sourceLocation, File targetLocation) throws IOException {
         if( sourceLocation.isDirectory() ) {
