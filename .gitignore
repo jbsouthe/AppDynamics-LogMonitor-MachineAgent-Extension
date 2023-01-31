@@ -1,0 +1,6 @@
+**/.DS_Store
+.idea/*
+*.jar
+reference/*
+target/*
+test.properties
