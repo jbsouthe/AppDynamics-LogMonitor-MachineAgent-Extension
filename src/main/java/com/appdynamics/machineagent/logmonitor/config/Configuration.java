@@ -10,6 +10,7 @@ import com.singularity.ee.agent.systemagent.api.TaskExecutionContext;
 import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -87,7 +88,7 @@ public class Configuration {
     }
 
     private void readConfigFile() throws TaskExecutionException {
-        Yaml yaml = new Yaml(new Constructor(ConfigurationModel.class));
+        Yaml yaml = new Yaml(new Constructor(ConfigurationModel.class, new LoaderOptions()));
         try {
             ConfigurationModel configurationModel = yaml.load(new FileReader(this.configFile));
             this.grokDir = new File(this.runDir, configurationModel.getGrokDirectory());

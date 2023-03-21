@@ -4,6 +4,7 @@ import com.appdynamics.machineagent.logmonitor.config.Configuration;
 import com.appdynamics.machineagent.logmonitor.model.JobModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -32,7 +33,7 @@ public class JobDirectory {
     public JobDirectory( String dirName, Configuration configuration) throws JobFileException {
         this.configuration=configuration;
         directoryFile = new File(dirName);
-        this.yaml = new Yaml(new Constructor(JobModel.class));
+        this.yaml = new Yaml(new Constructor(JobModel.class, new LoaderOptions()));
         if( !directoryFile.exists() || !directoryFile.isDirectory() ) throw new JobFileException("Directory does not exist: "+ dirName);
         try {
             this.greedyJobFile = new JobFile(null, yaml.load(getClass().getResourceAsStream("/GreedyCatchAll.job")), configuration);

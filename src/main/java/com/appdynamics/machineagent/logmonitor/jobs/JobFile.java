@@ -7,6 +7,7 @@ import io.krakens.grok.api.GrokCompiler;
 import io.krakens.grok.api.Match;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.nodes.NodeTuple;
@@ -119,7 +120,7 @@ public class JobFile {
         JobFile jobFile = new JobFile(this, file );
         jobFile.setSourceInfo(true, path, nameGlob);
         PrintWriter printWriter = new PrintWriter(file);
-        Representer representer = new Representer() {
+        Representer representer = new Representer( new DumperOptions()) {
             @Override
             protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object propertyValue, Tag customTag) {
                 // if value of property is null, ignore it.
