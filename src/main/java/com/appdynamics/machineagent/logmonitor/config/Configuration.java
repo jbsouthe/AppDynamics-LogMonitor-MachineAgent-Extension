@@ -1,6 +1,7 @@
 package com.appdynamics.machineagent.logmonitor.config;
 
 import com.appdynamics.machineagent.logmonitor.model.ConfigurationModel;
+import com.appdynamics.machineagent.logmonitor.process.LinuxProcessInfo;
 import com.appdynamics.machineagent.logmonitor.process.ProcessInfo;
 import com.appdynamics.machineagent.logmonitor.process.UnixProcessInfo;
 import com.appdynamics.machineagent.logmonitor.process.WindowsProcessInfo;
@@ -35,6 +36,7 @@ public class Configuration {
     private File jobDir;
     private File runDir;
     private File analyticsJobDir;
+    private File procDirectory;
     private String psCommandLine = "ps -ef";
     private String lsofCommandLine = "lsof -p %d";
     private List<String> logfileList;
@@ -82,6 +84,8 @@ public class Configuration {
         if( os.toLowerCase().contains("windows") ) {
             isRunningOnWindows=true;
             this.processInfo = new WindowsProcessInfo(this);
+        } else if (os.toLowerCase().contains("linux")) {
+            this.processInfo = new LinuxProcessInfo(this);
         } else {
             this.processInfo = new UnixProcessInfo(this);
         }
@@ -93,6 +97,7 @@ public class Configuration {
             ConfigurationModel configurationModel = yaml.load(new FileReader(this.configFile));
             this.grokDir = new File(this.runDir, configurationModel.getGrokDirectory());
             this.jobDir = new File(this.runDir, configurationModel.getJobDirectory());
+            this.procDirectory = new File(configurationModel.getProcDirectory());
             String analDir = configurationModel.getAnalyticsDirectory();
             if( analDir == null || "".equals(analDir) ) {
                 this.analyticsJobDir = new File( this.runDir, "../analytics-agent/conf/job");
@@ -166,4 +171,8 @@ public class Configuration {
         return this.templateJobManager;
     }
     public File getAnalyticsJobDir() { return this.analyticsJobDir; }
+
+    public File getProcDirectory () {
+        return this.procDirectory;
+    }
 }

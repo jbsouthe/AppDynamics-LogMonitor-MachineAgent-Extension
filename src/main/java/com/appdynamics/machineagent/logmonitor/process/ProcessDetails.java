@@ -27,6 +27,12 @@ public class ProcessDetails {
         logger.debug(String.format("Initialized Process Detail: %s", this));
     }
 
+    public ProcessDetails(String name, Long pid, String command) {
+        setName(name);
+        setPid(pid);
+        setCommand(command);
+    }
+
     public String getName() {
         return name;
     }

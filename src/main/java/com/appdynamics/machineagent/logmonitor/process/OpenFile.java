@@ -12,10 +12,11 @@ public class OpenFile {
     private File file;
     private JobFile jobFile;
 
-    public OpenFile(String fileName) {
-        this.fileName=fileName;
-        this.type="direct";
-        this.file= new File(fileName);
+    public OpenFile(String fileName, String type, Long pid) {
+        this.fileName = fileName;
+        this.type = type;
+        this.pid = pid;
+        this.file = new File(fileName);
     }
 
     public OpenFile(String line, String[] lsofOutputHeaderColumns) throws FileNotFoundException {

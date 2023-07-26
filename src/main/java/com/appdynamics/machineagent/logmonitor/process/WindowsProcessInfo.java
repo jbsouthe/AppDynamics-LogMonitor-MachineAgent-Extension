@@ -20,6 +20,7 @@ public class WindowsProcessInfo implements ProcessInfo {
         this.psCommandLine="wmic.exe process get processid,commandline /Format:csv"; //configuration.getPsCommandLine();
         this.lsofCommandLine="handle.exe -p %d"; //configuration.getLsofCommandLine();
         fixEULAProblem();
+        logger.info("Starting Windows Process Info Collector");
     }
 
     //use process explorer handle.exe to list open log files of a process, https://learn.microsoft.com/en-us/sysinternals/downloads/handle

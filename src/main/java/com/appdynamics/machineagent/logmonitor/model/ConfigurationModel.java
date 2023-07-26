@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public class ConfigurationModel {
-    private String analyticsDirectory=null, psCommand="ps -ef", lsofCommand="lsof -p %d", grokDirectory="./grok", jobDirectory="./jobs";
+    private String analyticsDirectory=null, psCommand="ps -ef", lsofCommand="lsof -p %d", grokDirectory="./grok", jobDirectory="./jobs", procDirectory="/proc";
     private List<String> process, logs, excludeLogs;
     public ConfigurationModel() {}
 
@@ -63,6 +63,12 @@ public class ConfigurationModel {
 
     public void setJobDirectory(String jobDirectory) {
         this.jobDirectory = jobDirectory;
+    }
+
+    public String getProcDirectory(){ return procDirectory; }
+
+    public void setProcDirectory (String procDirectory) {
+        this.procDirectory = procDirectory;
     }
 
     public List<String> getExcludeLogs() {

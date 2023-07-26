@@ -24,6 +24,7 @@ public class UnixProcessInfo implements ProcessInfo {
         RunCommand psHeader = new RunCommand("/bin/bash", "-c", String.format("%s |head -1", this.psCommandLine));
         this.psOutputHeaderColumns = psHeader.getStdOut().trim().split("\\s+");
         //logger.debug(String.format("psOutputHeader size: %d elements: '%s'",this.psOutputHeaderColumns.length, Utility.toString(this.psOutputHeaderColumns)));
+        logger.info("Starting Generic Unix Process Info Collector");
     }
 
     @Override
