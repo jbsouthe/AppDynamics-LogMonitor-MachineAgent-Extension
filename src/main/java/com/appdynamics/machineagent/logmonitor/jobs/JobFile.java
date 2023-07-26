@@ -94,7 +94,7 @@ public class JobFile {
                 return Double.MIN_VALUE;
             }
         }
-        if( totalPossibleMatches == 0 ) totalPossibleMatches+=0.000000001;
+        if( totalPossibleMatches == 0 ) return 0;
         return totalActualMatches/totalPossibleMatches;
     }
 
